@@ -9,6 +9,7 @@ class Game extends Model
 {
     protected $fillable = [
         'name',
+        'logo',
         'status',
     ];
 

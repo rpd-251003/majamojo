@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\GameController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\SuperDealController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\DashboardController as UserDashboard;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('/{id}', [SuperDealController::class, 'update'])->name('update');
             Route::delete('/{id}', [SuperDealController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/toggle-status', [SuperDealController::class, 'toggleStatus'])->name('toggle-status');
+        });
+
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('/data', [UserController::class, 'getData'])->name('data');
+            Route::post('/', [UserController::class, 'store'])->name('store');
+            Route::get('/{id}', [UserController::class, 'show'])->name('show');
+            Route::put('/{id}', [UserController::class, 'update'])->name('update');
+            Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('reset-password');
         });
     });
 

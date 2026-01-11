@@ -1,47 +1,158 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Login | Majamojo Game</title>
+    <!-- [Meta] -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="Majamojo Game Membership System Login" />
+    <meta name="author" content="Majamojo" />
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    <!-- [Favicon] icon -->
+    <link rel="icon" href="{{ asset('berry-template/dist/assets/images/favicon.svg') }}" type="image/x-icon" />
+    <!-- [Google Font] Family -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" id="main-font-link" />
+    <!-- [Tabler Icons] -->
+    <link rel="stylesheet" href="{{ asset('berry-template/dist/assets/fonts/tabler-icons.min.css') }}" />
+    <!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="{{ asset('berry-template/dist/assets/css/style.css') }}" id="main-style-link" />
+    <link rel="stylesheet" href="{{ asset('berry-template/dist/assets/css/style-preset.css') }}" />
+</head>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
+    <!-- [ Pre-loader ] start -->
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
         </div>
+    </div>
+    <!-- [ Pre-loader ] End -->
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+    <div class="auth-main">
+        <div class="auth-wrapper v1">
+            <div class="auth-form">
+                <div class="card my-5">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <img src="{{ asset('logo.png') }}" alt="Majamojo" class="img-fluid mb-3" style="max-width: 150px;">
+                            <h4 class="f-w-500 mb-1">Welcome Back!</h4>
+                            <p class="text-muted mb-4">Sign in to your account to continue</p>
+                        </div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+                        <!-- Session Status -->
+                        @if (session('status'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="ti ti-check me-2"></i>{{ session('status') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+
+                            <!-- Email Address -->
+                            <div class="mb-3">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                       id="email" name="email"
+                                       value="{{ old('email') }}"
+                                       placeholder="Enter your email"
+                                       required autofocus autocomplete="username">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label class="form-label" for="password">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                           id="password" name="password"
+                                           placeholder="Enter your password"
+                                           required autocomplete="current-password">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="ti ti-eye" id="eyeIcon"></i>
+                                    </button>
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Remember Me & Forgot Password -->
+                            <div class="d-flex mt-1 justify-content-between align-items-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="remember_me" name="remember">
+                                    <label class="form-check-label" for="remember_me">
+                                        Remember me
+                                    </label>
+                                </div>
+                                @if (Route::has('password.request'))
+                                    <a href="{{ route('password.request') }}" class="text-secondary">
+                                        Forgot Password?
+                                    </a>
+                                @endif
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="ti ti-login me-2"></i>Sign In
+                                </button>
+                            </div>
+
+                            <!-- Demo Accounts Info -->
+                            <div class="mt-4">
+                                <div class="alert alert-info">
+                                    <strong><i class="ti ti-info-circle me-2"></i>Demo Accounts:</strong>
+                                    <ul class="mb-0 mt-2">
+                                        <li><strong>Admin:</strong> admin@majamojo.com / password</li>
+                                        <li><strong>Membership:</strong> membership@majamojo.com / password</li>
+                                        <li><strong>Reguler:</strong> reguler@majamojo.com / password</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Register Link -->
+                        {{-- @if (Route::has('register'))
+                            <div class="d-flex justify-content-center align-items-end mt-4 pt-3 border-top">
+                                <h6 class="f-w-400 mb-0 me-2">Don't have an account?</h6>
+                                <a href="{{ route('register') }}" class="link-primary">Create Account</a>
+                            </div>
+                        @endif --}}
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+    <!-- Required Js -->
+    <script src="{{ asset('berry-template/dist/assets/js/plugins/popper.min.js') }}"></script>
+    <script src="{{ asset('berry-template/dist/assets/js/plugins/simplebar.min.js') }}"></script>
+    <script src="{{ asset('berry-template/dist/assets/js/plugins/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('berry-template/dist/assets/js/plugins/feather.min.js') }}"></script>
+    <script src="{{ asset('berry-template/dist/assets/js/script.js') }}"></script>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const password = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+            if (password.type === 'password') {
+                password.type = 'text';
+                eyeIcon.classList.remove('ti-eye');
+                eyeIcon.classList.add('ti-eye-off');
+            } else {
+                password.type = 'password';
+                eyeIcon.classList.remove('ti-eye-off');
+                eyeIcon.classList.add('ti-eye');
+            }
+        });
+    </script>
+</body>
+</html>

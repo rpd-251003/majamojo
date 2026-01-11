@@ -21,6 +21,12 @@ class GameController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
+                ->addColumn('logo_display', function ($row) {
+                    if ($row->logo) {
+                        return '<img src="' . asset('storage/' . $row->logo) . '" alt="' . $row->name . '" style="width: 50px; height: 50px; object-fit: contain;">';
+                    }
+                    return '<div class="avtar avtar-s bg-light-primary"><i class="ti ti-device-gamepad"></i></div>';
+                })
                 ->addColumn('status', function ($row) {
                     $checked = $row->status ? 'checked' : '';
                     return '<div class="form-check form-switch">
@@ -38,7 +44,7 @@ class GameController extends Controller
                         </button>
                     </div>';
                 })
-                ->rawColumns(['status', 'action'])
+                ->rawColumns(['logo_display', 'status', 'action'])
                 ->make(true);
         }
     }
@@ -47,14 +53,21 @@ class GameController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,jpg,png,gif,svg|max:2048',
             'status' => 'boolean',
         ]);
 
         try {
-            Game::create([
+            $data = [
                 'name' => $request->name,
                 'status' => $request->status ?? true,
-            ]);
+            ];
+
+            if ($request->hasFile('logo')) {
+                $data['logo'] = $request->file('logo')->store('games', 'public');
+            }
+
+            Game::create($data);
 
             return response()->json([
                 'success' => true,
@@ -88,15 +101,27 @@ class GameController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,jpg,png,gif,svg|max:2048',
             'status' => 'boolean',
         ]);
 
         try {
             $game = Game::findOrFail($id);
-            $game->update([
+
+            $data = [
                 'name' => $request->name,
                 'status' => $request->status ?? true,
-            ]);
+            ];
+
+            if ($request->hasFile('logo')) {
+                // Delete old logo if exists
+                if ($game->logo) {
+                    \Storage::disk('public')->delete($game->logo);
+                }
+                $data['logo'] = $request->file('logo')->store('games', 'public');
+            }
+
+            $game->update($data);
 
             return response()->json([
                 'success' => true,
@@ -114,6 +139,12 @@ class GameController extends Controller
     {
         try {
             $game = Game::findOrFail($id);
+
+            // Delete logo if exists
+            if ($game->logo) {
+                \Storage::disk('public')->delete($game->logo);
+            }
+
             $game->delete();
 
             return response()->json([

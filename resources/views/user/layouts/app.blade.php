@@ -28,10 +28,13 @@
     <link rel="stylesheet" href="{{ asset('berry-template/dist/assets/css/style.css') }}" id="main-style-link" />
     <link rel="stylesheet" href="{{ asset('berry-template/dist/assets/css/style-preset.css') }}" />
 
+    <!-- [Gaming Theme CSS] -->
+    <link rel="stylesheet" href="{{ asset('css/gaming-theme.css') }}" id="gaming-theme-css" />
+
     @stack('styles')
 </head>
 
-<body data-pc-preset="preset-1" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme="light">
+<body data-pc-preset="preset-1" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme="light" id="userBody">
     <!-- [ Pre-loader ] start -->
     <div class="loader-bg">
         <div class="loader-track">
@@ -45,7 +48,7 @@
         <div class="navbar-wrapper">
             <div class="m-header">
                 <a href="{{ route('user.dashboard') }}" class="b-brand text-primary">
-                    <img src="{{ asset('berry-template/dist/assets/images/logo-dark.svg') }}" alt="Majamojo" class="logo logo-lg" />
+                    <img src="{{ asset('logo.png') }}" alt="Majamojo" class="logo" width="150" />
                 </a>
             </div>
             <div class="navbar-content">
@@ -67,21 +70,21 @@
                     </li>
 
                     <li class="pc-item {{ request()->routeIs('user.vouchers.*') ? 'active' : '' }}">
-                        <a href="{{ route('user.vouchers.index') }}" class="pc-link">
+                        <a href="{{ route('user.vouchers') }}" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-ticket"></i></span>
                             <span class="pc-mtext">Vouchers</span>
                         </a>
                     </li>
 
                     <li class="pc-item {{ request()->routeIs('user.events.*') ? 'active' : '' }}">
-                        <a href="{{ route('user.events.index') }}" class="pc-link">
+                        <a href="{{ route('user.events') }}" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-calendar-event"></i></span>
                             <span class="pc-mtext">Events</span>
                         </a>
                     </li>
 
                     <li class="pc-item {{ request()->routeIs('user.super-deals.*') ? 'active' : '' }}">
-                        <a href="{{ route('user.super-deals.index') }}" class="pc-link">
+                        <a href="{{ route('user.super-deals') }}" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-gift"></i></span>
                             <span class="pc-mtext">Super Deals</span>
                         </a>
@@ -163,6 +166,11 @@
     </div>
     <!-- [ Main Content ] end -->
 
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle-btn" id="themeToggle" title="Toggle Gaming Theme">
+        <i class="ti ti-device-gamepad" id="themeIcon"></i>
+    </button>
+
     <!-- Logout Form -->
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
@@ -226,6 +234,96 @@
                         sidebar.classList.toggle('mob-sidebar-active');
                     }
                 });
+            }
+        });
+
+        // === THEME SWITCHER ===
+        $(document).ready(function() {
+            const body = $('#userBody');
+            const themeToggle = $('#themeToggle');
+            const themeIcon = $('#themeIcon');
+
+            // Load theme from localStorage (without notification)
+            const savedTheme = localStorage.getItem('userTheme');
+            if (savedTheme === 'gaming') {
+                enableGamingTheme(false);
+            }
+
+            // Theme toggle button click
+            themeToggle.on('click', function() {
+                if (body.hasClass('gaming-theme')) {
+                    disableGamingTheme(true);
+                } else {
+                    enableGamingTheme(true);
+                }
+            });
+
+            function enableGamingTheme(showNotif = false) {
+                body.addClass('gaming-theme');
+                themeIcon.removeClass('ti-device-gamepad').addClass('ti-sun');
+                themeToggle.attr('title', 'Switch to Original Theme');
+                localStorage.setItem('userTheme', 'gaming');
+
+                // Show notification only when manually toggled
+                if (showNotif) {
+                    showThemeNotification('Gaming Theme Activated! 🎮', 'Enjoy the futuristic experience');
+                }
+            }
+
+            function disableGamingTheme(showNotif = false) {
+                body.removeClass('gaming-theme');
+                themeIcon.removeClass('ti-sun').addClass('ti-device-gamepad');
+                themeToggle.attr('title', 'Switch to Gaming Theme');
+                localStorage.setItem('userTheme', 'original');
+
+                // Show notification only when manually toggled
+                if (showNotif) {
+                    showThemeNotification('Original Theme Activated', 'Back to classic Berry Template');
+                }
+            }
+
+            function showThemeNotification(title, text) {
+                // Create notification element
+                const notification = $('<div class="theme-notification"></div>');
+                notification.html(`
+                    <div class="theme-notification-content">
+                        <strong>${title}</strong>
+                        <p>${text}</p>
+                    </div>
+                `);
+
+                // Add styles
+                notification.css({
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    background: 'rgba(0, 212, 255, 0.95)',
+                    color: '#000',
+                    padding: '15px 25px',
+                    borderRadius: '10px',
+                    boxShadow: '0 8px 32px rgba(0, 212, 255, 0.5)',
+                    zIndex: 9999,
+                    backdropFilter: 'blur(10px)',
+                    transform: 'translateX(400px)',
+                    transition: 'all 0.5s ease',
+                    minWidth: '300px'
+                });
+
+                // Append to body
+                $('body').append(notification);
+
+                // Animate in
+                setTimeout(function() {
+                    notification.css('transform', 'translateX(0)');
+                }, 10);
+
+                // Animate out and remove
+                setTimeout(function() {
+                    notification.css('transform', 'translateX(400px)');
+                    setTimeout(function() {
+                        notification.remove();
+                    }, 500);
+                }, 3000);
             }
         });
     </script>

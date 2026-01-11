@@ -39,6 +39,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Logo</th>
                                 <th>Name</th>
                                 <th>Status</th>
                                 <th>Created At</th>
@@ -72,6 +73,15 @@
                         <label class="form-label">Game Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Enter game name" required>
                         <div class="invalid-feedback">Please enter a game name.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Game Logo/Icon</label>
+                        <input type="file" class="form-control" id="logo" name="logo" accept="image/jpeg,image/jpg,image/png,image/gif,image/svg+xml">
+                        <small class="text-muted">Upload logo (JPEG, JPG, PNG, GIF, SVG | Max: 2MB)</small>
+                        <div id="logoPreview" class="mt-2" style="display: none;">
+                            <img id="logoPreviewImg" src="" alt="Logo Preview" class="img-thumbnail" style="max-width: 150px; max-height: 150px; object-fit: contain;">
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -115,6 +125,13 @@ $(document).ready(function() {
                 className: 'text-center'
             },
             {
+                data: 'logo_display',
+                name: 'logo_display',
+                orderable: false,
+                searchable: false,
+                className: 'text-center'
+            },
+            {
                 data: 'name',
                 name: 'name'
             },
@@ -144,11 +161,27 @@ $(document).ready(function() {
         }
     });
 
+    // Logo Preview
+    $('#logo').change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#logoPreviewImg').attr('src', e.target.result);
+                $('#logoPreview').show();
+            }
+            reader.readAsDataURL(file);
+        } else {
+            $('#logoPreview').hide();
+        }
+    });
+
     // Create Button
     $('#createBtn').click(function() {
         $('#gameForm')[0].reset();
         $('#gameForm').removeClass('was-validated');
         $('#gameId').val('');
+        $('#logoPreview').hide();
         $('#modalTitle').html('<i class="ti ti-plus"></i> Add New Game');
         $('#gameModal').modal('show');
     });
@@ -162,6 +195,15 @@ $(document).ready(function() {
                 $('#gameId').val(response.data.id);
                 $('#name').val(response.data.name);
                 $('#status').prop('checked', response.data.status);
+
+                // Show existing logo if available
+                if (response.data.logo) {
+                    $('#logoPreviewImg').attr('src', '{{ asset("storage") }}/' + response.data.logo);
+                    $('#logoPreview').show();
+                } else {
+                    $('#logoPreview').hide();
+                }
+
                 $('#modalTitle').html('<i class="ti ti-edit"></i> Edit Game');
                 $('#gameModal').modal('show');
             }
@@ -185,17 +227,32 @@ $(document).ready(function() {
         const url = id ? `{{ url('admin/games') }}/${id}` : '{{ route("admin.games.store") }}';
         const method = id ? 'PUT' : 'POST';
 
+        // Prepare FormData for file upload
+        const formData = new FormData();
+        formData.append('name', $('#name').val());
+        formData.append('status', $('#status').is(':checked') ? 1 : 0);
+
+        // Add logo file if selected
+        const logoFile = $('#logo')[0].files[0];
+        if (logoFile) {
+            formData.append('logo', logoFile);
+        }
+
+        // For PUT method, add _method field
+        if (method === 'PUT') {
+            formData.append('_method', 'PUT');
+        }
+
         // Disable submit button
         const submitBtn = $(this).find('button[type="submit"]');
         submitBtn.prop('disabled', true).html('<i class="ti ti-loader"></i> Saving...');
 
         $.ajax({
             url: url,
-            method: method,
-            data: {
-                name: $('#name').val(),
-                status: $('#status').is(':checked') ? 1 : 0
-            },
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function(response) {
                 if (response.success) {
                     $('#gameModal').modal('hide');

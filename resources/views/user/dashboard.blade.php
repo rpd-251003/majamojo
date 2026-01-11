@@ -27,7 +27,7 @@
 <div class="row">
     <!-- Vouchers Card -->
     <div class="col-md-6 col-xl-3">
-        <div class="card bg-success-dark dashnum-card text-white overflow-hidden">
+        <div class="card bg-success dashnum-card text-white overflow-hidden">
             <span class="round small"></span>
             <span class="round big"></span>
             <div class="card-body">
@@ -52,7 +52,7 @@
 
     <!-- Events Card -->
     <div class="col-md-6 col-xl-3">
-        <div class="card bg-warning-dark dashnum-card text-white overflow-hidden">
+        <div class="card bg-warning dashnum-card text-white overflow-hidden">
             <span class="round small"></span>
             <span class="round big"></span>
             <div class="card-body">
@@ -77,7 +77,7 @@
 
     <!-- Super Deals Card -->
     <div class="col-md-6 col-xl-3">
-        <div class="card bg-danger-dark dashnum-card text-white overflow-hidden">
+        <div class="card bg-danger dashnum-card text-white overflow-hidden">
             <span class="round small"></span>
             <span class="round big"></span>
             <div class="card-body">
@@ -135,13 +135,13 @@
             </div>
             <div class="card-body">
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ route('user.vouchers.index') }}" class="btn btn-success">
+                    <a href="{{ route('user.vouchers') }}" class="btn btn-success">
                         <i class="ti ti-ticket"></i> Browse Vouchers
                     </a>
-                    <a href="{{ route('user.events.index') }}" class="btn btn-warning">
+                    <a href="{{ route('user.events') }}" class="btn btn-warning">
                         <i class="ti ti-calendar-event"></i> View Events
                     </a>
-                    <a href="{{ route('user.super-deals.index') }}" class="btn btn-danger">
+                    <a href="{{ route('user.super-deals') }}" class="btn btn-danger">
                         <i class="ti ti-gift"></i> Check Super Deals
                     </a>
                 </div>
@@ -156,7 +156,7 @@
         <div class="card table-card">
             <div class="card-header d-flex align-items-center justify-content-between py-3">
                 <h5>Recent Vouchers</h5>
-                <a href="{{ route('user.vouchers.index') }}" class="btn btn-sm btn-link-success">View All</a>
+                <a href="{{ route('user.vouchers') }}" class="btn btn-sm btn-link-success">View All</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -183,9 +183,15 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avtar avtar-s bg-light-primary flex-shrink-0">
-                                                <i class="ti ti-device-gamepad"></i>
-                                            </div>
+                                            @if($voucher->game->logo)
+                                                <div class="flex-shrink-0">
+                                                    <img src="{{ asset('storage/' . $voucher->game->logo) }}" alt="{{ $voucher->game->name }}" style="width: 35px; height: 35px; object-fit: contain;">
+                                                </div>
+                                            @else
+                                                <div class="avtar avtar-s bg-light-primary flex-shrink-0">
+                                                    <i class="ti ti-device-gamepad"></i>
+                                                </div>
+                                            @endif
                                             <div class="ms-2">
                                                 <p class="mb-0">{{ $voucher->game->name }}</p>
                                             </div>
@@ -210,7 +216,7 @@
         <div class="card table-card">
             <div class="card-header d-flex align-items-center justify-content-between py-3">
                 <h5>Recent Events</h5>
-                <a href="{{ route('user.events.index') }}" class="btn btn-sm btn-link-warning">View All</a>
+                <a href="{{ route('user.events') }}" class="btn btn-sm btn-link-warning">View All</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -230,9 +236,15 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avtar avtar-s bg-light-primary flex-shrink-0">
-                                                <i class="ti ti-device-gamepad"></i>
-                                            </div>
+                                            @if($event->game->logo)
+                                                <div class="flex-shrink-0">
+                                                    <img src="{{ asset('storage/' . $event->game->logo) }}" alt="{{ $event->game->name }}" style="width: 35px; height: 35px; object-fit: contain;">
+                                                </div>
+                                            @else
+                                                <div class="avtar avtar-s bg-light-primary flex-shrink-0">
+                                                    <i class="ti ti-device-gamepad"></i>
+                                                </div>
+                                            @endif
                                             <div class="ms-2">
                                                 <p class="mb-0">{{ $event->game->name }}</p>
                                             </div>
@@ -259,7 +271,7 @@
         <div class="card table-card">
             <div class="card-header d-flex align-items-center justify-content-between py-3">
                 <h5>Recent Super Deals</h5>
-                <a href="{{ route('user.super-deals.index') }}" class="btn btn-sm btn-link-danger">View All</a>
+                <a href="{{ route('user.super-deals') }}" class="btn btn-sm btn-link-danger">View All</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -284,9 +296,15 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avtar avtar-s bg-light-primary flex-shrink-0">
-                                                <i class="ti ti-device-gamepad"></i>
-                                            </div>
+                                            @if($deal->game->logo)
+                                                <div class="flex-shrink-0">
+                                                    <img src="{{ asset('storage/' . $deal->game->logo) }}" alt="{{ $deal->game->name }}" style="width: 35px; height: 35px; object-fit: contain;">
+                                                </div>
+                                            @else
+                                                <div class="avtar avtar-s bg-light-primary flex-shrink-0">
+                                                    <i class="ti ti-device-gamepad"></i>
+                                                </div>
+                                            @endif
                                             <div class="ms-2">
                                                 <p class="mb-0">{{ $deal->game->name }}</p>
                                             </div>

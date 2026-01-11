@@ -100,6 +100,18 @@
                     </li>
 
                     <li class="pc-item pc-caption">
+                        <label>User Management</label>
+                        <i class="ti ti-users"></i>
+                    </li>
+
+                    <li class="pc-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.users.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-users"></i></span>
+                            <span class="pc-mtext">Users</span>
+                        </a>
+                    </li>
+
+                    <li class="pc-item pc-caption">
                         <label>Akun</label>
                         <i class="ti ti-user"></i>
                     </li>
