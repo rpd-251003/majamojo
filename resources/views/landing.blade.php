@@ -176,6 +176,23 @@
         .hero-content {
             position: relative;
             z-index: 10;
+            transition: transform 0.1s ease-out, opacity 0.3s ease-out;
+            will-change: transform, opacity;
+        }
+
+        .hero-image {
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        .hero-bg {
+            transition: transform 0.1s ease-out;
+            will-change: transform, background;
+        }
+
+        .hero-particles div {
+            transition: transform 0.1s ease-out;
+            will-change: transform;
         }
 
         .hero-badge {
@@ -302,6 +319,25 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
+            transition: text-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            animation: lineGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes lineGlow {
+            0%, 100% { opacity: 0.3; width: 100px; }
+            50% { opacity: 1; width: 150px; }
         }
 
         .section-description {
@@ -323,9 +359,10 @@
             border: 2px solid rgba(0, 240, 255, 0.2);
             border-radius: 20px;
             overflow: hidden;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             height: 100%;
             position: relative;
+            will-change: transform;
         }
 
         .game-card::before {
@@ -413,9 +450,10 @@
             border: 2px solid rgba(0, 240, 255, 0.2);
             border-radius: 20px;
             overflow: hidden;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             height: 100%;
             position: relative;
+            will-change: transform;
         }
 
         .event-card::before {
@@ -597,9 +635,10 @@
             border: 2px solid rgba(255, 0, 191, 0.2);
             border-radius: 20px;
             overflow: hidden;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             height: 100%;
             position: relative;
+            will-change: transform;
         }
 
         .deal-card::before {
@@ -1033,7 +1072,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 hero-image" data-aos="fade-left">
-                    <img src="{{ asset('logo.png') }}" alt="Majamojo Gaming" class="img-fluid">
+                    <img src="https://idmj-website.oss-ap-southeast-5.aliyuncs.com/resources/majamojo-web/202503171658-ete-kv-home-2.png" alt="Majamojo Gaming" class="img-fluid">
                 </div>
             </div>
         </div>
@@ -1331,31 +1370,198 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
-        // Initialize AOS
+        // Initialize AOS with more dynamic settings
         AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
+            duration: 800,
+            once: false,
+            offset: 50,
+            easing: 'ease-out-cubic'
         });
 
-        // Create hero particles
+        // Create advanced animated particles with various movements
         const heroParticlesContainer = document.getElementById('hero-particles');
-        for (let i = 0; i < 30; i++) {
+        const particleColors = ['var(--neon-blue)', 'var(--neon-purple)', 'var(--neon-pink)'];
+
+        // Create 50 particles with different sizes and speeds
+        for (let i = 0; i < 50; i++) {
             const particle = document.createElement('div');
+            const size = Math.random() * 4 + 2; // 2-6px
+            const speed = Math.random() * 3 + 2; // 2-5 seconds
+            const color = particleColors[Math.floor(Math.random() * particleColors.length)];
+
             particle.style.position = 'absolute';
-            particle.style.width = '3px';
-            particle.style.height = '3px';
-            particle.style.background = 'var(--neon-blue)';
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.background = color;
             particle.style.borderRadius = '50%';
-            particle.style.opacity = '0.6';
+            particle.style.opacity = Math.random() * 0.6 + 0.3; // 0.3-0.9
             particle.style.left = Math.random() * 100 + '%';
             particle.style.top = Math.random() * 100 + '%';
-            particle.style.animation = `float ${Math.random() * 10 + 10}s ease-in-out infinite`;
-            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+
+            // Different animation patterns
+            const patterns = ['floatWave', 'floatZigzag', 'floatCircle', 'floatDiagonal'];
+            const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+
+            particle.style.animation = `${pattern} ${speed}s ease-in-out infinite`;
+            particle.style.animationDelay = Math.random() * 2 + 's';
+
             heroParticlesContainer.appendChild(particle);
         }
 
-        // Navbar scroll effect
+        // Add dynamic keyframe animations
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes floatWave {
+                0%, 100% {
+                    transform: translate(0, 0) scale(1);
+                }
+                25% {
+                    transform: translate(30px, -50px) scale(1.2);
+                }
+                50% {
+                    transform: translate(60px, -20px) scale(0.8);
+                }
+                75% {
+                    transform: translate(30px, 20px) scale(1.1);
+                }
+            }
+
+            @keyframes floatZigzag {
+                0%, 100% {
+                    transform: translate(0, 0) rotate(0deg);
+                }
+                20% {
+                    transform: translate(40px, -60px) rotate(45deg);
+                }
+                40% {
+                    transform: translate(-20px, -100px) rotate(-45deg);
+                }
+                60% {
+                    transform: translate(50px, -140px) rotate(90deg);
+                }
+                80% {
+                    transform: translate(-30px, -80px) rotate(-90deg);
+                }
+            }
+
+            @keyframes floatCircle {
+                0% {
+                    transform: translate(0, 0) rotate(0deg);
+                }
+                25% {
+                    transform: translate(50px, -50px) rotate(90deg);
+                }
+                50% {
+                    transform: translate(0, -100px) rotate(180deg);
+                }
+                75% {
+                    transform: translate(-50px, -50px) rotate(270deg);
+                }
+                100% {
+                    transform: translate(0, 0) rotate(360deg);
+                }
+            }
+
+            @keyframes floatDiagonal {
+                0%, 100% {
+                    transform: translate(0, 0) scale(1);
+                    opacity: 0.3;
+                }
+                50% {
+                    transform: translate(-80px, -120px) scale(1.5);
+                    opacity: 0.9;
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // Parallax effect on scroll
+        let ticking = false;
+        let lastScrollY = 0;
+
+        function parallaxScroll() {
+            const scrollY = window.pageYOffset;
+
+            // Hero parallax
+            const heroContent = document.querySelector('.hero-content');
+            const heroImage = document.querySelector('.hero-image');
+            const heroBg = document.querySelector('.hero-bg');
+
+            if (heroContent && scrollY < window.innerHeight) {
+                heroContent.style.transform = `translateY(${scrollY * 0.3}px)`;
+                heroContent.style.opacity = 1 - (scrollY / window.innerHeight) * 0.8;
+            }
+
+            if (heroImage && scrollY < window.innerHeight) {
+                heroImage.style.transform = `translateY(${scrollY * -0.2}px) scale(${1 + scrollY * 0.0002})`;
+            }
+
+            if (heroBg && scrollY < window.innerHeight) {
+                heroBg.style.transform = `translateY(${scrollY * 0.5}px)`;
+            }
+
+            // Parallax for particles
+            const particles = heroParticlesContainer.querySelectorAll('div');
+            particles.forEach((particle, index) => {
+                const speed = 0.1 + (index % 5) * 0.05;
+                particle.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+
+            // Section reveal effects
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                if (rect.top < windowHeight * 0.75) {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                } else {
+                    section.style.opacity = '0.3';
+                    section.style.transform = 'translateY(50px)';
+                }
+            });
+
+            // Scale cards on scroll
+            const cards = document.querySelectorAll('.game-card, .event-card, .deal-card');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                const cardCenter = rect.top + rect.height / 2;
+                const windowCenter = windowHeight / 2;
+                const distance = Math.abs(cardCenter - windowCenter);
+                const maxDistance = windowHeight / 2;
+                const scale = 1 - (distance / maxDistance) * 0.1;
+
+                if (rect.top < windowHeight && rect.bottom > 0) {
+                    card.style.transform = `scale(${Math.max(scale, 0.9)})`;
+                }
+            });
+
+            lastScrollY = scrollY;
+            ticking = false;
+        }
+
+        function requestTick() {
+            if (!ticking) {
+                window.requestAnimationFrame(parallaxScroll);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', requestTick);
+
+        // Initial call
+        parallaxScroll();
+
+        // Initialize section transitions
+        const allSections = document.querySelectorAll('section');
+        allSections.forEach(section => {
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        });
+
+        // Navbar scroll effect with enhanced transitions
         const navbar = document.querySelector('.main-navbar');
         window.addEventListener('scroll', function() {
             if (window.scrollY > 100) {
@@ -1427,10 +1633,10 @@
         document.querySelectorAll('.deal-countdown-timer').forEach(updateCountdown);
 
         // Active nav link on scroll
-        const sections = document.querySelectorAll('section[id]');
+        const navSections = document.querySelectorAll('section[id]');
         window.addEventListener('scroll', function() {
             let current = '';
-            sections.forEach(section => {
+            navSections.forEach(section => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
                 if (pageYOffset >= sectionTop - 200) {
@@ -1456,6 +1662,145 @@
         document.querySelectorAll('.btn-event-view').forEach(btn => {
             btn.addEventListener('click', function() {
                 window.location.href = '{{ route("login") }}';
+            });
+        });
+
+        // Enhanced card interactions with magnetic effect
+        const cards = document.querySelectorAll('.game-card, .event-card, .deal-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+
+            card.addEventListener('mouseleave', function() {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+
+        // Animated gradient background on scroll
+        let gradientOffset = 0;
+        function animateGradient() {
+            gradientOffset += 0.5;
+            const heroBg = document.querySelector('.hero-bg');
+            if (heroBg) {
+                heroBg.style.background = `linear-gradient(${gradientOffset}deg, #0a0a0f 0%, #1a0a2e 50%, #0a0a0f 100%)`;
+            }
+            requestAnimationFrame(animateGradient);
+        }
+        animateGradient();
+
+        // Add ripple effect to buttons
+        const buttons = document.querySelectorAll('.btn-hero, .btn-nav-login, .btn-deal-claim, .btn-event-view');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple-effect');
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add ripple styles
+        const rippleStyle = document.createElement('style');
+        rippleStyle.textContent = `
+            .ripple-effect {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s ease-out;
+                pointer-events: none;
+            }
+
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+
+            .btn-hero, .btn-nav-login, .btn-deal-claim, .btn-event-view {
+                position: relative;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(rippleStyle);
+
+        // Mouse trail effect
+        const colors = ['rgba(0, 240, 255, 0.5)', 'rgba(191, 0, 255, 0.5)', 'rgba(255, 0, 191, 0.5)'];
+        let colorIndex = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.9) { // Only create trail occasionally
+                const trail = document.createElement('div');
+                trail.style.position = 'fixed';
+                trail.style.width = '6px';
+                trail.style.height = '6px';
+                trail.style.borderRadius = '50%';
+                trail.style.background = colors[colorIndex % colors.length];
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                trail.style.pointerEvents = 'none';
+                trail.style.zIndex = '9999';
+                trail.style.boxShadow = `0 0 10px ${colors[colorIndex % colors.length]}`;
+                trail.style.animation = 'trail-fade 1s ease-out forwards';
+
+                document.body.appendChild(trail);
+
+                colorIndex++;
+
+                setTimeout(() => {
+                    trail.remove();
+                }, 1000);
+            }
+        });
+
+        // Trail fade animation
+        const trailStyle = document.createElement('style');
+        trailStyle.textContent = `
+            @keyframes trail-fade {
+                0% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(trailStyle);
+
+        // Section title glow effect on scroll
+        const sectionHeadings = document.querySelectorAll('.section-heading');
+        window.addEventListener('scroll', function() {
+            sectionHeadings.forEach(heading => {
+                const rect = heading.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.7 && rect.bottom > 0) {
+                    heading.style.textShadow = '0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue)';
+                } else {
+                    heading.style.textShadow = 'none';
+                }
             });
         });
     </script>
