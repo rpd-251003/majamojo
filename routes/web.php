@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\GameController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -10,16 +11,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\DashboardController as UserDashboard;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        $role = auth()->user()->role;
-        if ($role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        return redirect()->route('user.dashboard');
-    }
-    return redirect()->route('login');
-});
+// Landing Page (Public)
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {

@@ -31,6 +31,102 @@
     <!-- [Gaming Theme CSS] -->
     <link rel="stylesheet" href="{{ asset('css/gaming-theme.css') }}" id="gaming-theme-css" />
 
+    <style>
+        /* Enhanced Toggle Button Styling */
+        .pc-head-link {
+            background: rgba(103, 58, 183, 0.1);
+            border: 1px solid rgba(103, 58, 183, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px !important;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            min-height: 42px;
+            position: relative;
+        }
+
+        .pc-head-link:hover {
+            background: rgba(103, 58, 183, 0.2);
+            border-color: #673ab7;
+            transform: scale(1.05);
+        }
+
+        .pc-head-link.active {
+            background: rgba(103, 58, 183, 0.3);
+            border-color: #673ab7;
+        }
+
+        .pc-head-link.active i {
+            animation: toggleRotate 0.3s ease;
+        }
+
+        @keyframes toggleRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(90deg); }
+        }
+
+        .pc-head-link i {
+            font-size: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .header-mobile-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Ensure visibility in mobile */
+        @media (max-width: 1024px) {
+            .pc-head-link {
+                background: rgba(103, 58, 183, 0.15);
+                border: 2px solid rgba(103, 58, 183, 0.4);
+            }
+
+            .pc-head-link:hover,
+            .pc-head-link.active {
+                background: rgba(103, 58, 183, 0.3);
+                border-color: #673ab7;
+                box-shadow: 0 0 15px rgba(103, 58, 183, 0.3);
+            }
+        }
+
+        /* Sidebar Overlay for Mobile */
+        .mob-sidebar-active::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Sidebar Animation */
+        .pc-sidebar {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        @media (max-width: 1024px) {
+            .pc-sidebar:not(.mob-sidebar-active) {
+                transform: translateX(-100%);
+            }
+
+            .pc-sidebar.mob-sidebar-active {
+                transform: translateX(0);
+                box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+            }
+        }
+    </style>
+
     @stack('styles')
 </head>
 
@@ -208,32 +304,59 @@
                 }
             });
 
-            // Sidebar toggle functionality - Fixed
+            // Sidebar toggle functionality - Enhanced
             document.addEventListener('DOMContentLoaded', function() {
                 const mobileCollapse = document.querySelector('#mobile-collapse');
                 const sidebar = document.querySelector('.pc-sidebar');
                 const body = document.body;
 
                 if (mobileCollapse && sidebar) {
+                    // Toggle sidebar
                     mobileCollapse.addEventListener('click', function(e) {
                         e.preventDefault();
-                        sidebar.classList.toggle('mob-sidebar-active');
-                        body.classList.toggle('mob-sidebar-active');
-                    });
-                }
+                        e.stopPropagation();
 
-                // Close sidebar when clicking outside on mobile
-                document.addEventListener('click', function(e) {
-                    if (window.innerWidth <= 1024) {
-                        const isClickInsideSidebar = sidebar && sidebar.contains(e.target);
-                        const isClickOnToggle = mobileCollapse && mobileCollapse.contains(e.target);
+                        const isActive = sidebar.classList.contains('mob-sidebar-active');
 
-                        if (!isClickInsideSidebar && !isClickOnToggle && sidebar && sidebar.classList.contains('mob-sidebar-active')) {
+                        if (isActive) {
                             sidebar.classList.remove('mob-sidebar-active');
                             body.classList.remove('mob-sidebar-active');
+                            this.classList.remove('active');
+                        } else {
+                            sidebar.classList.add('mob-sidebar-active');
+                            body.classList.add('mob-sidebar-active');
+                            this.classList.add('active');
                         }
-                    }
-                });
+                    });
+
+                    // Close sidebar when clicking outside on mobile
+                    document.addEventListener('click', function(e) {
+                        if (window.innerWidth <= 1024) {
+                            const isClickInsideSidebar = sidebar && sidebar.contains(e.target);
+                            const isClickOnToggle = mobileCollapse && (mobileCollapse.contains(e.target) || mobileCollapse === e.target);
+
+                            if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('mob-sidebar-active')) {
+                                sidebar.classList.remove('mob-sidebar-active');
+                                body.classList.remove('mob-sidebar-active');
+                                mobileCollapse.classList.remove('active');
+                            }
+                        }
+                    });
+
+                    // Close sidebar on menu item click (mobile)
+                    const menuItems = sidebar.querySelectorAll('.pc-link');
+                    menuItems.forEach(function(item) {
+                        item.addEventListener('click', function() {
+                            if (window.innerWidth <= 1024) {
+                                setTimeout(function() {
+                                    sidebar.classList.remove('mob-sidebar-active');
+                                    body.classList.remove('mob-sidebar-active');
+                                    mobileCollapse.classList.remove('active');
+                                }, 100);
+                            }
+                        });
+                    });
+                }
             });
 
             // === THEME SWITCHER ===
@@ -242,9 +365,12 @@
                 const themeToggle = $('#themeToggle');
                 const themeIcon = $('#themeIcon');
 
-                // Load theme from localStorage (without notification)
+                // Load theme from localStorage, default to gaming theme
                 const savedTheme = localStorage.getItem('userTheme');
-                if (savedTheme === 'gaming') {
+                if (savedTheme === 'original') {
+                    disableGamingTheme(false);
+                } else {
+                    // Default to gaming theme
                     enableGamingTheme(false);
                 }
 
