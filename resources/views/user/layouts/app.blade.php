@@ -184,146 +184,149 @@
     <!-- Berry Template JS -->
     <script src="{{ asset('berry-template/dist/assets/js/script.js') }}"></script>
 
-    <script>
-        // Setup AJAX CSRF Token
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // Global error handler
-        $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
-            if (jqxhr.status === 401) {
-                window.location.href = '/login';
-            } else if (jqxhr.status === 403) {
-                alert('You do not have permission to perform this action.');
-            }
-        });
-
-        // Initialize Feather Icons
-        $(document).ready(function() {
-            if (typeof feather !== 'undefined') {
-                feather.replace();
-            }
-        });
-
-        // Sidebar toggle functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarHide = document.querySelector('#sidebar-hide');
-            const mobileCollapse = document.querySelector('#mobile-collapse');
-            const sidebar = document.querySelector('.pc-sidebar');
-
-            if (sidebarHide) {
-                sidebarHide.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (sidebar) {
-                        sidebar.classList.toggle('mob-sidebar-active');
-                    }
-                });
-            }
-
-            if (mobileCollapse) {
-                mobileCollapse.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (sidebar) {
-                        sidebar.classList.toggle('mob-sidebar-active');
-                    }
-                });
-            }
-        });
-
-        // === THEME SWITCHER ===
-        $(document).ready(function() {
-            const body = $('#userBody');
-            const themeToggle = $('#themeToggle');
-            const themeIcon = $('#themeIcon');
-
-            // Load theme from localStorage (without notification)
-            const savedTheme = localStorage.getItem('userTheme');
-            if (savedTheme === 'gaming') {
-                enableGamingTheme(false);
-            }
-
-            // Theme toggle button click
-            themeToggle.on('click', function() {
-                if (body.hasClass('gaming-theme')) {
-                    disableGamingTheme(true);
-                } else {
-                    enableGamingTheme(true);
+        <script>
+            // Setup AJAX CSRF Token
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
-            function enableGamingTheme(showNotif = false) {
-                body.addClass('gaming-theme');
-                themeIcon.removeClass('ti-device-gamepad').addClass('ti-sun');
-                themeToggle.attr('title', 'Switch to Original Theme');
-                localStorage.setItem('userTheme', 'gaming');
-
-                // Show notification only when manually toggled
-                if (showNotif) {
-                    showThemeNotification('Gaming Theme Activated! 🎮', 'Enjoy the futuristic experience');
+            // Global error handler
+            $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+                if (jqxhr.status === 401) {
+                    window.location.href = '/login';
+                } else if (jqxhr.status === 403) {
+                    alert('You do not have permission to perform this action.');
                 }
-            }
+            });
 
-            function disableGamingTheme(showNotif = false) {
-                body.removeClass('gaming-theme');
-                themeIcon.removeClass('ti-sun').addClass('ti-device-gamepad');
-                themeToggle.attr('title', 'Switch to Gaming Theme');
-                localStorage.setItem('userTheme', 'original');
-
-                // Show notification only when manually toggled
-                if (showNotif) {
-                    showThemeNotification('Original Theme Activated', 'Back to classic Berry Template');
+            // Initialize Feather Icons
+            $(document).ready(function() {
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
                 }
-            }
+            });
 
-            function showThemeNotification(title, text) {
-                // Create notification element
-                const notification = $('<div class="theme-notification"></div>');
-                notification.html(`
-                    <div class="theme-notification-content">
-                        <strong>${title}</strong>
-                        <p>${text}</p>
-                    </div>
-                `);
+            // Sidebar toggle functionality - Fixed
+            document.addEventListener('DOMContentLoaded', function() {
+                const mobileCollapse = document.querySelector('#mobile-collapse');
+                const sidebar = document.querySelector('.pc-sidebar');
+                const body = document.body;
 
-                // Add styles
-                notification.css({
-                    position: 'fixed',
-                    top: '20px',
-                    right: '20px',
-                    background: 'rgba(0, 212, 255, 0.95)',
-                    color: '#000',
-                    padding: '15px 25px',
-                    borderRadius: '10px',
-                    boxShadow: '0 8px 32px rgba(0, 212, 255, 0.5)',
-                    zIndex: 9999,
-                    backdropFilter: 'blur(10px)',
-                    transform: 'translateX(400px)',
-                    transition: 'all 0.5s ease',
-                    minWidth: '300px'
+                if (mobileCollapse && sidebar) {
+                    mobileCollapse.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        sidebar.classList.toggle('mob-sidebar-active');
+                        body.classList.toggle('mob-sidebar-active');
+                    });
+                }
+
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 1024) {
+                        const isClickInsideSidebar = sidebar && sidebar.contains(e.target);
+                        const isClickOnToggle = mobileCollapse && mobileCollapse.contains(e.target);
+
+                        if (!isClickInsideSidebar && !isClickOnToggle && sidebar && sidebar.classList.contains('mob-sidebar-active')) {
+                            sidebar.classList.remove('mob-sidebar-active');
+                            body.classList.remove('mob-sidebar-active');
+                        }
+                    }
+                });
+            });
+
+            // === THEME SWITCHER ===
+            $(document).ready(function() {
+                const body = $('#userBody');
+                const themeToggle = $('#themeToggle');
+                const themeIcon = $('#themeIcon');
+
+                // Load theme from localStorage (without notification)
+                const savedTheme = localStorage.getItem('userTheme');
+                if (savedTheme === 'gaming') {
+                    enableGamingTheme(false);
+                }
+
+                // Theme toggle button click
+                themeToggle.on('click', function() {
+                    if (body.hasClass('gaming-theme')) {
+                        disableGamingTheme(true);
+                    } else {
+                        enableGamingTheme(true);
+                    }
                 });
 
-                // Append to body
-                $('body').append(notification);
+                function enableGamingTheme(showNotif = false) {
+                    body.addClass('gaming-theme');
+                    themeIcon.removeClass('ti-device-gamepad').addClass('ti-sun');
+                    themeToggle.attr('title', 'Switch to Original Theme');
+                    localStorage.setItem('userTheme', 'gaming');
 
-                // Animate in
-                setTimeout(function() {
-                    notification.css('transform', 'translateX(0)');
-                }, 10);
+                    // Show notification only when manually toggled
+                    if (showNotif) {
+                        showThemeNotification('Gaming Theme Activated! 🎮', 'Enjoy the futuristic experience');
+                    }
+                }
 
-                // Animate out and remove
-                setTimeout(function() {
-                    notification.css('transform', 'translateX(400px)');
+                function disableGamingTheme(showNotif = false) {
+                    body.removeClass('gaming-theme');
+                    themeIcon.removeClass('ti-sun').addClass('ti-device-gamepad');
+                    themeToggle.attr('title', 'Switch to Gaming Theme');
+                    localStorage.setItem('userTheme', 'original');
+
+                    // Show notification only when manually toggled
+                    if (showNotif) {
+                        showThemeNotification('Original Theme Activated', 'Back to classic Berry Template');
+                    }
+                }
+
+                function showThemeNotification(title, text) {
+                    // Create notification element
+                    const notification = $('<div class="theme-notification"></div>');
+                    notification.html(`
+                        <div class="theme-notification-content">
+                            <strong>${title}</strong>
+                            <p>${text}</p>
+                        </div>
+                    `);
+
+                    // Add styles
+                    notification.css({
+                        position: 'fixed',
+                        top: '20px',
+                        right: '20px',
+                        background: 'rgba(0, 212, 255, 0.95)',
+                        color: '#000',
+                        padding: '15px 25px',
+                        borderRadius: '10px',
+                        boxShadow: '0 8px 32px rgba(0, 212, 255, 0.5)',
+                        zIndex: 9999,
+                        backdropFilter: 'blur(10px)',
+                        transform: 'translateX(400px)',
+                        transition: 'all 0.5s ease',
+                        minWidth: '300px'
+                    });
+
+                    // Append to body
+                    $('body').append(notification);
+
+                    // Animate in
                     setTimeout(function() {
-                        notification.remove();
-                    }, 500);
-                }, 3000);
-            }
-        });
-    </script>
+                        notification.css('transform', 'translateX(0)');
+                    }, 10);
 
-    @stack('scripts')
-</body>
-</html>
+                    // Animate out and remove
+                    setTimeout(function() {
+                        notification.css('transform', 'translateX(400px)');
+                        setTimeout(function() {
+                            notification.remove();
+                        }, 500);
+                    }, 3000);
+                }
+            });
+        </script>
+
+        @stack('scripts')
+    </body>
+    </html>
