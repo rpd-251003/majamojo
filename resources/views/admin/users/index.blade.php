@@ -23,6 +23,91 @@
 </div>
 <!-- [ breadcrumb ] end -->
 
+<!-- [ Statistics Cards ] start -->
+<div class="row">
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-danger-dark dashnum-card text-white overflow-hidden">
+            <span class="round small"></span>
+            <span class="round big"></span>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="avtar avtar-lg">
+                            <i class="ti ti-shield-check text-white" style="font-size: 30px;"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-light-danger border border-light-danger text-white">Admin</span>
+                    </div>
+                </div>
+                <span class="text-white d-block f-34 f-w-500 my-2" id="adminCount">0</span>
+                <p class="mb-0 opacity-75">Admin Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-primary-dark dashnum-card text-white overflow-hidden">
+            <span class="round small"></span>
+            <span class="round big"></span>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="avtar avtar-lg">
+                            <i class="ti ti-crown text-white" style="font-size: 30px;"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-light-primary border border-light-primary text-white">Premium</span>
+                    </div>
+                </div>
+                <span class="text-white d-block f-34 f-w-500 my-2" id="membershipCount">0</span>
+                <p class="mb-0 opacity-75">Membership Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-success-dark dashnum-card text-white overflow-hidden">
+            <span class="round small"></span>
+            <span class="round big"></span>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="avtar avtar-lg">
+                            <i class="ti ti-user text-white" style="font-size: 30px;"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-light-success border border-light-success text-white">Regular</span>
+                    </div>
+                </div>
+                <span class="text-white d-block f-34 f-w-500 my-2" id="regulerCount">0</span>
+                <p class="mb-0 opacity-75">Regular Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-warning-dark dashnum-card text-white overflow-hidden">
+            <span class="round small"></span>
+            <span class="round big"></span>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="avtar avtar-lg">
+                            <i class="ti ti-users text-white" style="font-size: 30px;"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-light-warning border border-light-warning text-white">Total</span>
+                    </div>
+                </div>
+                <span class="text-white d-block f-34 f-w-500 my-2" id="totalCount">0</span>
+                <p class="mb-0 opacity-75">Total Users</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Statistics Cards ] end -->
+
 <!-- [ Filter Section ] start -->
 <div class="row">
     <div class="col-12">
@@ -243,8 +328,29 @@ $(document).ready(function() {
             processing: '<i class="ti ti-loader"></i> Loading...',
             emptyTable: 'No users found',
             zeroRecords: 'No matching users found'
+        },
+        drawCallback: function() {
+            updateStatistics();
         }
     });
+
+    // Update statistics function
+    function updateStatistics() {
+        $.get('{{ route('admin.users.data') }}?length=1000', function(response) {
+            const data = response.data;
+            const admin = data.filter(u => u.role === 'admin').length;
+            const membership = data.filter(u => u.role === 'membership').length;
+            const reguler = data.filter(u => u.role === 'reguler').length;
+
+            $('#adminCount').text(admin);
+            $('#membershipCount').text(membership);
+            $('#regulerCount').text(reguler);
+            $('#totalCount').text(data.length);
+        });
+    }
+
+    // Initial load
+    updateStatistics();
 
     // Filter change event
     $('#filterRole').change(function() {
