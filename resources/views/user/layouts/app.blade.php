@@ -186,6 +186,7 @@
                         </a>
                     </li>
 
+                    @if(auth()->user()->role === 'membership')
                     <li class="pc-item pc-caption">
                         <label>Support</label>
                         <i class="ti ti-help"></i>
@@ -197,6 +198,7 @@
                             <span class="pc-mtext">Support Tickets</span>
                         </a>
                     </li>
+                    @endif
 
                     <li class="pc-item pc-caption">
                         <label>Account</label>
