@@ -112,6 +112,18 @@
                     </li>
 
                     <li class="pc-item pc-caption">
+                        <label>Support</label>
+                        <i class="ti ti-help"></i>
+                    </li>
+
+                    <li class="pc-item {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.tickets.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-messages"></i></span>
+                            <span class="pc-mtext">Tickets</span>
+                        </a>
+                    </li>
+
+                    <li class="pc-item pc-caption">
                         <label>Akun</label>
                         <i class="ti ti-user"></i>
                     </li>
@@ -181,6 +193,7 @@
             @yield('content')
         </div>
     </div>
+</div></div>
     <!-- [ Main Content ] end -->
 
     <!-- Logout Form -->

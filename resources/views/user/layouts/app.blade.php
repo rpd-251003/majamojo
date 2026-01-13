@@ -187,6 +187,18 @@
                     </li>
 
                     <li class="pc-item pc-caption">
+                        <label>Support</label>
+                        <i class="ti ti-help"></i>
+                    </li>
+
+                    <li class="pc-item {{ request()->routeIs('user.tickets.*') ? 'active' : '' }}">
+                        <a href="{{ route('user.tickets.index') }}" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-messages"></i></span>
+                            <span class="pc-mtext">Support Tickets</span>
+                        </a>
+                    </li>
+
+                    <li class="pc-item pc-caption">
                         <label>Account</label>
                         <i class="ti ti-user"></i>
                     </li>

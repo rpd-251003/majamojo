@@ -74,9 +74,7 @@
                                 <th>No</th>
                                 <th>Title</th>
                                 <th>Game</th>
-                                <th>Banner</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
+                                <th>Date Range</th>
                                 <th>Status</th>
                                 <th class="text-end">Action</th>
                             </tr>
@@ -208,24 +206,15 @@ $(document).ready(function() {
                 name: 'title'
             },
             {
-                data: 'game',
+                data: 'game_name',
                 name: 'game.name',
                 orderable: false
             },
             {
-                data: 'banner',
-                name: 'banner',
+                data: 'date_range',
+                name: 'date_range',
                 orderable: false,
-                searchable: false,
-                className: 'text-center'
-            },
-            {
-                data: 'start_date',
-                name: 'start_date'
-            },
-            {
-                data: 'end_date',
-                name: 'end_date'
+                searchable: false
             },
             {
                 data: 'status',

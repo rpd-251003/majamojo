@@ -8,8 +8,14 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\SuperDealController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\User\DashboardController as UserDashboard;
+use App\Http\Controllers\User\TicketController as UserTicketController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+
+// Broadcasting Routes (for Pusher authentication)
+Broadcast::routes(['middleware' => ['auth']]);
 
 // Landing Page (Public)
 Route::get('/', [LandingController::class, 'index'])->name('landing');
@@ -67,6 +73,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('reset-password');
         });
+
+        Route::prefix('tickets')->name('tickets.')->group(function () {
+            Route::get('/', [AdminTicketController::class, 'index'])->name('index');
+            Route::get('/{id}', [AdminTicketController::class, 'show'])->name('show');
+            Route::post('/{id}/message', [AdminTicketController::class, 'sendMessage'])->name('message');
+            Route::patch('/{id}/status', [AdminTicketController::class, 'updateStatus'])->name('update-status');
+            Route::patch('/{id}/assign', [AdminTicketController::class, 'assignAdmin'])->name('assign');
+            Route::patch('/{id}/priority', [AdminTicketController::class, 'updatePriority'])->name('update-priority');
+        });
     });
 
     Route::middleware('role:membership,reguler')->prefix('user')->name('user.')->group(function () {
@@ -74,6 +89,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/vouchers', [UserDashboard::class, 'vouchers'])->name('vouchers');
         Route::get('/events', [UserDashboard::class, 'events'])->name('events');
         Route::get('/super-deals', [UserDashboard::class, 'superDeals'])->name('super-deals');
+
+        Route::prefix('tickets')->name('tickets.')->group(function () {
+            Route::get('/', [UserTicketController::class, 'index'])->name('index');
+            Route::get('/create', [UserTicketController::class, 'create'])->name('create');
+            Route::post('/', [UserTicketController::class, 'store'])->name('store');
+            Route::get('/{id}', [UserTicketController::class, 'show'])->name('show');
+            Route::post('/{id}/message', [UserTicketController::class, 'sendMessage'])->name('message');
+            Route::patch('/{id}/close', [UserTicketController::class, 'close'])->name('close');
+        });
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
