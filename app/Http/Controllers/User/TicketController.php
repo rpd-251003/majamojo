@@ -32,14 +32,23 @@ class TicketController extends Controller
         $request->validate([
             'subject' => 'required|string|max:255',
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high,urgent'
+            'priority' => 'required|in:low,medium,high,urgent',
+            'due_date_date' => 'nullable|date|after_or_equal:today',
+            'due_date_time' => 'nullable|string'
         ]);
+
+        $dueDate = null;
+        if ($request->due_date_date) {
+            $time = $request->due_date_time ?? '17:00';
+            $dueDate = $request->due_date_date . ' ' . $time . ':00';
+        }
 
         $ticket = Ticket::create([
             'user_id' => Auth::id(),
             'subject' => $request->subject,
             'description' => $request->description,
             'priority' => $request->priority,
+            'due_date' => $dueDate,
             'status' => 'open'
         ]);
 

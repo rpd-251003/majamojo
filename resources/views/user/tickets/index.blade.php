@@ -51,6 +51,7 @@
                                             <th>Subject</th>
                                             <th>Status</th>
                                             <th>Priority</th>
+                                            <th>Due Date</th>
                                             <th>Last Updated</th>
                                             <th>Action</th>
                                         </tr>
@@ -73,6 +74,7 @@
                                                 </td>
                                                 <td>{!! $ticket->status_badge !!}</td>
                                                 <td>{!! $ticket->priority_badge !!}</td>
+                                                <td>{!! $ticket->due_date_badge !!}</td>
                                                 <td>{{ $ticket->updated_at->diffForHumans() }}</td>
                                                 <td>
                                                     <a href="{{ route('user.tickets.show', $ticket->id) }}" class="btn btn-sm btn-light-primary">

@@ -45,6 +45,14 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="text-muted mb-1">Due Date</label>
+                            <div>{!! $ticket->due_date_badge !!}</div>
+                            @if($ticket->due_date)
+                                <small class="text-muted">{{ $ticket->due_date->format('M d, Y - H:i') }}</small>
+                            @endif
+                        </div>
+
+                        <div class="mb-3">
                             <label class="text-muted mb-1">Created</label>
                             <p class="mb-0">{{ $ticket->created_at->format('M d, Y h:i A') }}</p>
                             <small class="text-muted">{{ $ticket->created_at->diffForHumans() }}</small>

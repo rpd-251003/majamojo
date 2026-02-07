@@ -2,6 +2,7 @@
 
 namespace Illuminate\Session;
 
+use BackedEnum;
 use Closure;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Arr;
@@ -16,6 +17,7 @@ use Illuminate\Support\ViewErrorBag;
 use RuntimeException;
 use SessionHandlerInterface;
 use stdClass;
+use UnitEnum;
 
 use function Illuminate\Support\enum_value;
 
@@ -272,7 +274,7 @@ class Store implements Session
     /**
      * Checks if a key exists.
      *
-     * @param  string|array  $key
+     * @param  \BackedEnum|\UnitEnum|string|array  $key
      * @return bool
      */
     public function exists($key)
@@ -287,7 +289,7 @@ class Store implements Session
     /**
      * Determine if the given key is missing from the session data.
      *
-     * @param  string|array  $key
+     * @param  \BackedEnum|\UnitEnum|string|array  $key
      * @return bool
      */
     public function missing($key)
@@ -298,7 +300,7 @@ class Store implements Session
     /**
      * Determine if a key is present and not null.
      *
-     * @param  string|array  $key
+     * @param  \BackedEnum|\UnitEnum|string|array  $key
      * @return bool
      */
     public function has($key)
@@ -311,7 +313,7 @@ class Store implements Session
     /**
      * Determine if any of the given keys are present and not null.
      *
-     * @param  string|array  $key
+     * @param  \BackedEnum|\UnitEnum|string|array  $key
      * @return bool
      */
     public function hasAny($key)
@@ -462,12 +464,14 @@ class Store implements Session
     /**
      * Flash a key / value pair to the session.
      *
-     * @param  string  $key
+     * @param  \BackedEnum|\UnitEnum|string  $key
      * @param  mixed  $value
      * @return void
      */
-    public function flash(string $key, $value = true)
+    public function flash(BackedEnum|UnitEnum|string $key, $value = true)
     {
+        $key = enum_value($key);
+
         $this->put($key, $value);
 
         $this->push('_flash.new', $key);
@@ -478,12 +482,14 @@ class Store implements Session
     /**
      * Flash a key / value pair to the session for immediate use.
      *
-     * @param  string  $key
+     * @param  \BackedEnum|\UnitEnum|string  $key
      * @param  mixed  $value
      * @return void
      */
     public function now($key, $value)
     {
+        $key = enum_value($key);
+
         $this->put($key, $value);
 
         $this->push('_flash.old', $key);

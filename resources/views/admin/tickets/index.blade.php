@@ -106,6 +106,123 @@
             </div>
         </div>
 
+        @if($stats['overdue'] > 0)
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-danger dashnum-card text-white overflow-hidden">
+                    <span class="round small"></span>
+                    <span class="round big"></span>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="d-flex align-items-center">
+                                    <div class="avtar avtar-lg me-3">
+                                        <i class="ti ti-alert-triangle text-white" style="font-size: 30px;"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-white d-block f-34 f-w-500">{{ $stats['overdue'] }}</span>
+                                        <p class="mb-0 opacity-75">Overdue Tickets - Require immediate attention!</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#overdue-section" class="btn btn-light btn-sm">
+                                    <i class="ti ti-arrow-down me-1"></i>View Overdue
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Overdue Tickets Section -->
+        @if($overdueTickets->count() > 0)
+        <div id="overdue-section" class="card border border-danger">
+            <div class="card-header bg-danger text-white">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="ti ti-alert-triangle me-2" style="font-size: 24px;"></i>
+                        <div>
+                            <h5 class="text-white mb-0">Overdue Tickets ({{ $overdueTickets->count() }})</h5>
+                            <small class="text-white opacity-75">Tickets that have passed their due date - sorted by most overdue first</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light-danger">
+                            <tr>
+                                <th>Ticket #</th>
+                                <th>User</th>
+                                <th>User Type</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Due Date</th>
+                                <th>Overdue</th>
+                                <th>Assigned To</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($overdueTickets as $ticket)
+                                <tr class="table-danger" style="background-color: rgba(220, 53, 69, {{ min(0.05 + ($ticket->overdue_days * 0.02), 0.2) }});">
+                                    <td>
+                                        <strong class="text-danger">{{ $ticket->ticket_number }}</strong>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="avtar avtar-s bg-light-primary">
+                                                    <i class="ti ti-user"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-2">
+                                                <h6 class="mb-0">{{ $ticket->user->name }}</h6>
+                                                <small class="text-muted">{{ $ticket->user->email }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{!! $ticket->user_type_badge !!}</td>
+                                    <td>
+                                        <h6 class="mb-0">{{ Str::limit($ticket->subject, 30) }}</h6>
+                                    </td>
+                                    <td>{!! $ticket->status_badge !!}</td>
+                                    <td>{!! $ticket->priority_badge !!}</td>
+                                    <td>
+                                        <small class="text-danger fw-bold">{{ $ticket->due_date->format('M d, Y') }}</small><br>
+                                        <small class="text-danger">{{ $ticket->due_date->format('H:i') }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-danger">
+                                            <i class="ti ti-alert-triangle me-1"></i>{{ $ticket->overdue_days }} day{{ $ticket->overdue_days > 1 ? 's' : '' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if($ticket->assignedAdmin)
+                                            <span>{{ $ticket->assignedAdmin->name }}</span>
+                                        @else
+                                            <span class="text-muted">Unassigned</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('admin.tickets.show', $ticket->id) }}" class="btn btn-sm btn-danger">
+                                            <i class="ti ti-eye me-1"></i>View
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Filters Card -->
         <div class="card">
             <div class="card-header">
@@ -179,6 +296,7 @@
                                 <th>Subject</th>
                                 <th>Status</th>
                                 <th>Priority</th>
+                                <th>Due Date</th>
                                 <th>Assigned To</th>
                                 <th>Last Activity</th>
                                 <th>Action</th>
@@ -214,6 +332,7 @@
                                     </td>
                                     <td>{!! $ticket->status_badge !!}</td>
                                     <td>{!! $ticket->priority_badge !!}</td>
+                                    <td>{!! $ticket->due_date_badge !!}</td>
                                     <td>
                                         @if($ticket->assignedAdmin)
                                             <div class="d-flex align-items-center">
@@ -238,7 +357,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center py-5">
+                                    <td colspan="10" class="text-center py-5">
                                         <div class="text-center">
                                             <i class="ti ti-ticket" style="font-size: 48px; opacity: 0.3;"></i>
                                             <p class="mt-2 text-muted">No tickets found</p>

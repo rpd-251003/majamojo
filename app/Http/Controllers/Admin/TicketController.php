@@ -54,9 +54,19 @@ class TicketController extends Controller
             'regular' => Ticket::byUserType('reguler')->count(),
         ];
 
+        // Overdue tickets: past due_date, not resolved/closed, sorted by most overdue first
+        $overdueTickets = Ticket::with(['user', 'latestMessage', 'assignedAdmin'])
+            ->whereNotNull('due_date')
+            ->where('due_date', '<', now())
+            ->whereNotIn('status', ['resolved', 'closed'])
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        $stats['overdue'] = $overdueTickets->count();
+
         $admins = User::where('role', 'admin')->get();
 
-        return view('admin.tickets.index', compact('tickets', 'stats', 'admins'));
+        return view('admin.tickets.index', compact('tickets', 'stats', 'admins', 'overdueTickets'));
     }
 
     public function show($id)

@@ -16,13 +16,78 @@ class Ticket extends Model
         'description',
         'status',
         'priority',
+        'due_date',
         'assigned_to',
         'closed_at'
     ];
 
     protected $casts = [
-        'closed_at' => 'datetime'
+        'closed_at' => 'datetime',
+        'due_date' => 'datetime'
     ];
+
+    public function getIsOverdueAttribute()
+    {
+        return $this->due_date
+            && $this->due_date->isPast()
+            && !in_array($this->status, ['resolved', 'closed']);
+    }
+
+    public function getOverdueDaysAttribute()
+    {
+        if (!$this->is_overdue) {
+            return 0;
+        }
+
+        return (int) $this->due_date->diffInDays(now());
+    }
+
+    public function getOverdueHoursAttribute()
+    {
+        if (!$this->is_overdue) {
+            return 0;
+        }
+
+        return (int) $this->due_date->diffInHours(now());
+    }
+
+    public function getDueDateBadgeAttribute()
+    {
+        if (!$this->due_date) {
+            return '<span class="badge bg-light text-muted">No Due Date</span>';
+        }
+
+        $formatted = $this->due_date->format('M d, Y H:i');
+
+        if ($this->is_overdue) {
+            $hours = $this->overdue_hours;
+            if ($hours < 24) {
+                $label = $hours . ' hour' . ($hours > 1 ? 's' : '');
+            } else {
+                $days = $this->overdue_days;
+                $label = $days . ' day' . ($days > 1 ? 's' : '');
+            }
+            return '<span class="badge bg-danger"><i class="ti ti-alert-triangle me-1"></i>Overdue ' . $label . '</span>';
+        }
+
+        $hoursLeft = (int) now()->diffInHours($this->due_date, false);
+
+        if ($hoursLeft <= 3) {
+            return '<span class="badge bg-danger text-white"><i class="ti ti-urgent me-1"></i>Due very soon</span>';
+        }
+
+        if ($hoursLeft <= 24) {
+            return '<span class="badge bg-warning"><i class="ti ti-clock me-1"></i>Due in ' . $hoursLeft . 'h</span>';
+        }
+
+        $daysLeft = (int) now()->diffInDays($this->due_date, false);
+
+        if ($daysLeft <= 3) {
+            return '<span class="badge bg-warning"><i class="ti ti-clock me-1"></i>Due in ' . $daysLeft . ' day' . ($daysLeft > 1 ? 's' : '') . '</span>';
+        }
+
+        return '<span class="badge bg-info"><i class="ti ti-calendar me-1"></i>' . $formatted . '</span>';
+    }
 
     protected static function boot()
     {

@@ -46,6 +46,14 @@
                             <div>{!! $ticket->priority_badge !!}</div>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="text-muted mb-1">Due Date</label>
+                            <div>{!! $ticket->due_date_badge !!}</div>
+                            @if($ticket->due_date)
+                                <small class="text-muted">{{ $ticket->due_date->format('M d, Y - H:i') }}</small>
+                            @endif
+                        </div>
+
                         @if($ticket->assignedAdmin)
                             <div class="mb-3">
                                 <label class="text-muted mb-1">Assigned To</label>

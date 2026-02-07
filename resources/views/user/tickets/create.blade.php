@@ -65,6 +65,40 @@
                             </div>
 
                             <div class="mb-3">
+                                <label class="form-label"><i class="ti ti-calendar-event me-1"></i>Due Date</label>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light"><i class="ti ti-calendar"></i></span>
+                                            <input type="date"
+                                                   class="form-control @error('due_date') is-invalid @enderror"
+                                                   id="due_date_date"
+                                                   name="due_date_date"
+                                                   value="{{ old('due_date_date') }}"
+                                                   min="{{ date('Y-m-d') }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light"><i class="ti ti-clock"></i></span>
+                                            <input type="time"
+                                                   class="form-control @error('due_time') is-invalid @enderror"
+                                                   id="due_date_time"
+                                                   name="due_date_time"
+                                                   value="{{ old('due_date_time', '17:00') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                @error('due_date')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                                @error('due_date_date')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                                <small class="form-text text-muted d-block mt-1">Set a deadline for this ticket (optional). Select date and time.</small>
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label" for="description">Description <span class="text-danger">*</span></label>
                                 <textarea class="form-control @error('description') is-invalid @enderror"
                                           id="description"
