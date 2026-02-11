@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Game;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class EventController extends Controller
@@ -74,10 +75,11 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'game_id' => 'required|exists:games,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'banner_image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'external_link' => 'nullable|url',
@@ -85,7 +87,11 @@ class EventController extends Controller
         ]);
 
         try {
-            Event::create($request->all());
+            if ($request->hasFile('banner_image')) {
+                $validated['banner_image'] = $request->file('banner_image')->store('events', 'public');
+            }
+
+            Event::create($validated);
             return response()->json([
                 'success' => true,
                 'message' => 'Event created successfully!'
@@ -102,6 +108,11 @@ class EventController extends Controller
     {
         try {
             $event = Event::with('game')->findOrFail($id);
+
+            if ($event->banner_image) {
+                $event->banner_image_url = asset('storage/' . $event->banner_image);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $event
@@ -116,10 +127,11 @@ class EventController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'game_id' => 'required|exists:games,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'banner_image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'external_link' => 'nullable|url',
@@ -128,7 +140,16 @@ class EventController extends Controller
 
         try {
             $event = Event::findOrFail($id);
-            $event->update($request->all());
+
+            if ($request->hasFile('banner_image')) {
+                // Delete old banner
+                if ($event->banner_image) {
+                    Storage::disk('public')->delete($event->banner_image);
+                }
+                $validated['banner_image'] = $request->file('banner_image')->store('events', 'public');
+            }
+
+            $event->update($validated);
             return response()->json([
                 'success' => true,
                 'message' => 'Event updated successfully!'
@@ -145,6 +166,12 @@ class EventController extends Controller
     {
         try {
             $event = Event::findOrFail($id);
+
+            // Delete banner image from storage
+            if ($event->banner_image) {
+                Storage::disk('public')->delete($event->banner_image);
+            }
+
             $event->delete();
             return response()->json([
                 'success' => true,
