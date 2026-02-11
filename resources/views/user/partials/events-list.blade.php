@@ -34,9 +34,7 @@
                 <h5 class="card-title mb-2">{{ $event->title }}</h5>
 
                 @if($event->description)
-                    <p class="text-muted small mb-3">
-                        {{ Str::limit($event->description, 100) }}
-                    </p>
+                    <p class="text-muted small mb-3">{{ Str::limit($event->description, 100) }}</p>
                 @endif
 
                 <div class="bg-light-warning rounded p-2 mb-3">
@@ -54,26 +52,34 @@
                     </div>
                 </div>
 
-                @php
-                    $daysLeft = now()->diffInDays($event->end_date, false);
-                @endphp
-
-                @if($daysLeft > 0)
-                    <div class="alert alert-info py-2 mb-3">
-                        <i class="ti ti-clock me-1"></i>
-                        <strong>{{ $daysLeft }}</strong> day{{ $daysLeft > 1 ? 's' : '' }} remaining
+                {{-- Realtime Countdown --}}
+                <div class="countdown-timer mb-3" data-end-date="{{ $event->end_date->format('Y-m-d') }}T23:59:59">
+                    <div class="d-flex justify-content-center gap-2 text-center">
+                        <div class="countdown-box">
+                            <span class="countdown-value days fw-bold">--</span>
+                            <small class="countdown-label d-block text-muted">Days</small>
+                        </div>
+                        <div class="countdown-separator align-self-center fw-bold text-muted">:</div>
+                        <div class="countdown-box">
+                            <span class="countdown-value hours fw-bold">--</span>
+                            <small class="countdown-label d-block text-muted">Hours</small>
+                        </div>
+                        <div class="countdown-separator align-self-center fw-bold text-muted">:</div>
+                        <div class="countdown-box">
+                            <span class="countdown-value minutes fw-bold">--</span>
+                            <small class="countdown-label d-block text-muted">Min</small>
+                        </div>
+                        <div class="countdown-separator align-self-center fw-bold text-muted">:</div>
+                        <div class="countdown-box">
+                            <span class="countdown-value seconds fw-bold">--</span>
+                            <small class="countdown-label d-block text-muted">Sec</small>
+                        </div>
                     </div>
-                @endif
+                </div>
 
-                @if($event->external_link)
-                    <a href="{{ $event->external_link }}" target="_blank" class="btn btn-warning w-100">
-                        <i class="ti ti-external-link me-2"></i>View Event Details
-                    </a>
-                @else
-                    <button class="btn btn-outline-warning w-100" disabled>
-                        <i class="ti ti-info-circle me-2"></i>More Info Coming Soon
-                    </button>
-                @endif
+                <a href="{{ route('user.events.show', $event->id) }}" class="btn btn-primary w-100">
+                    <i class="ti ti-eye me-2"></i>Show Details
+                </a>
             </div>
         </div>
     </div>

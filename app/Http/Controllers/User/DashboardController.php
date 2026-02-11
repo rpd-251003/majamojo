@@ -125,6 +125,13 @@ class DashboardController extends Controller
         return view('user.events', compact('events', 'games'));
     }
 
+    public function eventShow($id)
+    {
+        $event = Event::with('game')->active()->findOrFail($id);
+
+        return view('user.events.show', compact('event'));
+    }
+
     public function superDeals(Request $request)
     {
         $games = Game::where('status', true)->orderBy('name')->get();

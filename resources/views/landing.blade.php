@@ -863,36 +863,32 @@
         }
 
         .footer-brand {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .footer-brand img {
-            max-width: 150px;
+            max-width: 160px;
             filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3));
-        }
-
-        .footer-description {
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1.6;
-            margin-bottom: 25px;
         }
 
         .footer-social {
             display: flex;
-            gap: 15px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .footer-social-link {
             width: 40px;
             height: 40px;
             background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--neon-blue);
+            border: 1px solid rgba(0, 240, 255, 0.3);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--neon-blue);
             transition: all 0.3s ease;
+            font-size: 18px;
         }
 
         .footer-social-link:hover {
@@ -900,10 +896,11 @@
             color: #000;
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
+            border-color: var(--neon-blue);
         }
 
         .footer-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: #fff;
             margin-bottom: 20px;
@@ -933,13 +930,41 @@
             transform: translateX(5px);
         }
 
+        .footer-contact-company {
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .footer-contact-address {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+
+        .footer-contact-email {
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .footer-contact-email:hover {
+            color: #fff;
+            transform: translateX(3px);
+        }
+
         .footer-bottom {
             margin-top: 50px;
             padding-top: 30px;
             border-top: 1px solid rgba(0, 240, 255, 0.1);
             text-align: center;
             color: rgba(255, 255, 255, 0.4);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* === RESPONSIVE === */
@@ -1304,58 +1329,70 @@
     <footer class="main-footer">
         <div class="container">
             <div class="row">
+                <!-- Brand & Social -->
                 <div class="col-lg-4 mb-4">
                     <div class="footer-brand">
                         <img src="{{ asset('logo.png') }}" alt="Majamojo">
                     </div>
-                    <p class="footer-description">
-                        Majamojo is the ultimate gaming community platform where players connect, compete, and win amazing rewards.
-                    </p>
                     <div class="footer-social">
-                        <a href="#" class="footer-social-link">
+                        <a href="https://www.facebook.com/majamojogamesofficial/" target="_blank" class="footer-social-link" title="Facebook">
                             <i class="ti ti-brand-facebook"></i>
                         </a>
-                        <a href="#" class="footer-social-link">
-                            <i class="ti ti-brand-twitter"></i>
+                        <a href="https://www.instagram.com/majamojo.games" target="_blank" class="footer-social-link" title="Instagram">
+                            <i class="ti ti-brand-instagram"></i>
                         </a>
-                        <a href="#" class="footer-social-link">
-                            <i class="ti ti-brand-discord"></i>
+                        <a href="https://www.youtube.com/@majamojogames" target="_blank" class="footer-social-link" title="YouTube">
+                            <i class="ti ti-brand-youtube"></i>
                         </a>
-                        <a href="#" class="footer-social-link">
-                            <i class="ti ti-brand-twitch"></i>
+                        <a href="https://www.linkedin.com/company/majamojo/" target="_blank" class="footer-social-link" title="LinkedIn">
+                            <i class="ti ti-brand-linkedin"></i>
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h4 class="footer-title">Quick Links</h4>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-4 mb-4">
                     <ul class="footer-links">
                         <li><a href="#home">Home</a></li>
-                        <li><a href="#games">Games</a></li>
-                        <li><a href="#events">Events</a></li>
-                        <li><a href="#deals">Deals</a></li>
+                        <li><a href="#games">Products</a></li>
+                        <li><a href="#events">News</a></li>
+                        <li><a href="#deals">Shop</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h4 class="footer-title">Community</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Forums</a></li>
-                        <li><a href="#">Tournaments</a></li>
-                        <li><a href="#">Leaderboards</a></li>
-                        <li><a href="#">Support</a></li>
-                    </ul>
+
+                <!-- Consumer Complaint Service -->
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <div class="footer-contact">
+                        <p class="footer-contact-company">PT Games Karya Nusantara</p>
+                        <p class="footer-contact-address">
+                            Rukan Permata Senayan, Blok A-09<br>
+                            Jl. Tentara Pelajar<br>
+                            Kel. Grogol Utara, Kebayoran Lama,<br>
+                            Jakarta Selatan
+                        </p>
+                        <a href="mailto:business@majamojo.com" class="footer-contact-email">
+                            <i class="ti ti-mail me-2"></i>business@majamojo.com
+                        </a>
+                    </div>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h4 class="footer-title">Legal</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                    </ul>
+
+                <!-- Government Contact -->
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <div class="footer-contact">
+                        <p class="footer-contact-address">
+                            Directorate General of Consumer Protection and Trade Compliance<br>
+                            Ministry of Trade<br>
+                            Republic of Indonesia
+                        </p>
+                        <a href="tel:085311111010" class="footer-contact-email">
+                            <i class="ti ti-phone me-2"></i>085311111010
+                        </a>
+                    </div>
                 </div>
             </div>
+
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} Majamojo Game. All rights reserved. Powered by cutting-edge gaming technology.</p>
+                <p>Copyright &copy; {{ date('Y') }} Majamojo online. Intellectual Property Rights belong to their respective owners. All rights reserved.</p>
             </div>
         </div>
     </footer>

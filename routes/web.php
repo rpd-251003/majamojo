@@ -88,6 +88,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [UserDashboard::class, 'index'])->name('dashboard');
         Route::get('/vouchers', [UserDashboard::class, 'vouchers'])->name('vouchers');
         Route::get('/events', [UserDashboard::class, 'events'])->name('events');
+        Route::get('/events/{id}', [UserDashboard::class, 'eventShow'])->name('events.show');
         Route::get('/super-deals', [UserDashboard::class, 'superDeals'])->name('super-deals');
 
         Route::prefix('tickets')->name('tickets.')->group(function () {

@@ -409,12 +409,14 @@
                                             <small class="text-muted ms-2">{{ $event->game->name }}</small>
                                         </div>
                                         @php
-                                            $daysLeft = now()->diffInDays($event->end_date, false);
+                                            $totalHoursLeft = (int) now()->diffInHours($event->end_date, false);
+                                            $daysLeft = intdiv($totalHoursLeft, 24);
+                                            $hoursLeft = $totalHoursLeft % 24;
                                         @endphp
-                                        @if($daysLeft > 0)
+                                        @if($totalHoursLeft > 0)
                                             <div class="event-countdown">
                                                 <i class="ti ti-clock-hour-4"></i>
-                                                <small>{{ $daysLeft }} day{{ $daysLeft > 1 ? 's' : '' }} remaining</small>
+                                                <small>{{ $daysLeft }}d {{ $hoursLeft }}h remaining</small>
                                             </div>
                                         @endif
                                     </div>

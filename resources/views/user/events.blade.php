@@ -107,9 +107,7 @@
                     <h5 class="card-title mb-2">{{ $event->title }}</h5>
 
                     @if($event->description)
-                        <p class="text-muted small mb-3">
-                            {{ Str::limit($event->description, 100) }}
-                        </p>
+                        <p class="text-muted small mb-3">{{ Str::limit($event->description, 100) }}</p>
                     @endif
 
                     <div class="bg-light-warning rounded p-2 mb-3">
@@ -127,26 +125,34 @@
                         </div>
                     </div>
 
-                    @php
-                        $daysLeft = now()->diffInDays($event->end_date, false);
-                    @endphp
-
-                    @if($daysLeft > 0)
-                        <div class="alert alert-info py-2 mb-3">
-                            <i class="ti ti-clock me-1"></i>
-                            <strong>{{ $daysLeft }}</strong> day{{ $daysLeft > 1 ? 's' : '' }} remaining
+                    {{-- Realtime Countdown --}}
+                    <div class="countdown-timer mb-3" data-end-date="{{ $event->end_date->format('Y-m-d') }}T23:59:59">
+                        <div class="d-flex justify-content-center gap-2 text-center">
+                            <div class="countdown-box">
+                                <span class="countdown-value days fw-bold">--</span>
+                                <small class="countdown-label d-block text-muted">Days</small>
+                            </div>
+                            <div class="countdown-separator align-self-center fw-bold text-muted">:</div>
+                            <div class="countdown-box">
+                                <span class="countdown-value hours fw-bold">--</span>
+                                <small class="countdown-label d-block text-muted">Hours</small>
+                            </div>
+                            <div class="countdown-separator align-self-center fw-bold text-muted">:</div>
+                            <div class="countdown-box">
+                                <span class="countdown-value minutes fw-bold">--</span>
+                                <small class="countdown-label d-block text-muted">Min</small>
+                            </div>
+                            <div class="countdown-separator align-self-center fw-bold text-muted">:</div>
+                            <div class="countdown-box">
+                                <span class="countdown-value seconds fw-bold">--</span>
+                                <small class="countdown-label d-block text-muted">Sec</small>
+                            </div>
                         </div>
-                    @endif
+                    </div>
 
-                    @if($event->external_link)
-                        <a href="{{ $event->external_link }}" target="_blank" class="btn btn-warning w-100">
-                            <i class="ti ti-external-link me-2"></i>View Event Details
-                        </a>
-                    @else
-                        <button class="btn btn-outline-warning w-100" disabled>
-                            <i class="ti ti-info-circle me-2"></i>More Info Coming Soon
-                        </button>
-                    @endif
+                    <a href="{{ route('user.events.show', $event->id) }}" class="btn btn-primary w-100">
+                        <i class="ti ti-eye me-2"></i>Show Details
+                    </a>
                 </div>
             </div>
         </div>
@@ -197,6 +203,122 @@
 .event-card:hover .card-img-top {
     transform: scale(1.05);
 }
+
+/* Countdown */
+.countdown-timer {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+    border-radius: 10px;
+    padding: 12px 8px;
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.12);
+}
+
+.countdown-box {
+    min-width: 48px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 6px 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.countdown-value {
+    font-size: 20px;
+    line-height: 1.2;
+    display: block;
+    color: var(--bs-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.countdown-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.countdown-separator {
+    font-size: 18px;
+    margin-top: -8px;
+}
+
+.countdown-expired {
+    background: linear-gradient(135deg, #fff0f0 0%, #ffe8e8 100%);
+    border-color: rgba(220, 53, 69, 0.15);
+}
+
+.countdown-expired .countdown-value {
+    color: var(--bs-danger);
+}
+
+/* ===== Gaming Theme Overrides ===== */
+body.gaming-theme .event-card {
+    border: 1px solid var(--glass-border);
+}
+
+body.gaming-theme .event-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2), 0 0 15px rgba(0, 212, 255, 0.1);
+    border-color: var(--gaming-primary);
+}
+
+body.gaming-theme .event-card .bg-light-warning {
+    background: rgba(0, 212, 255, 0.08) !important;
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 8px;
+}
+
+body.gaming-theme .event-card .bg-light-warning strong {
+    color: #e0e0e0;
+}
+
+body.gaming-theme .event-card .bg-light-warning .border-start {
+    border-color: rgba(0, 212, 255, 0.2) !important;
+}
+
+body.gaming-theme .countdown-timer {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, rgba(0, 153, 255, 0.06) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+body.gaming-theme .countdown-box {
+    background: rgba(10, 14, 39, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(0, 212, 255, 0.1);
+}
+
+body.gaming-theme .countdown-value {
+    color: var(--gaming-primary) !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+body.gaming-theme .countdown-label {
+    color: rgba(224, 224, 224, 0.6) !important;
+}
+
+body.gaming-theme .countdown-separator {
+    color: var(--gaming-primary) !important;
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
+}
+
+body.gaming-theme .countdown-expired {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.06) 100%);
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+body.gaming-theme .countdown-expired .countdown-value {
+    color: #ff4757 !important;
+    text-shadow: 0 0 8px rgba(255, 71, 87, 0.4);
+}
+
+body.gaming-theme .countdown-expired .countdown-box {
+    border-color: rgba(220, 53, 69, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(220, 53, 69, 0.1);
+}
+
+body.gaming-theme .event-card .bg-light-primary {
+    background: rgba(0, 212, 255, 0.1) !important;
+}
+
+body.gaming-theme .event-card .bg-light-primary i {
+    color: var(--gaming-primary) !important;
+}
 </style>
 @endpush
 
@@ -204,7 +326,48 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Function to load events via AJAX
+    // ============================
+    // Realtime Countdown
+    // ============================
+    function initCountdowns() {
+        document.querySelectorAll('.countdown-timer').forEach(function(el) {
+            const endDate = new Date(el.dataset.endDate).getTime();
+
+            function tick() {
+                const now = Date.now();
+                const diff = endDate - now;
+
+                if (diff <= 0) {
+                    el.classList.add('countdown-expired');
+                    el.querySelector('.days').textContent = '0';
+                    el.querySelector('.hours').textContent = '0';
+                    el.querySelector('.minutes').textContent = '0';
+                    el.querySelector('.seconds').textContent = '0';
+                    return;
+                }
+
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+
+                el.querySelector('.days').textContent = d;
+                el.querySelector('.hours').textContent = String(h).padStart(2, '0');
+                el.querySelector('.minutes').textContent = String(m).padStart(2, '0');
+                el.querySelector('.seconds').textContent = String(s).padStart(2, '0');
+
+                requestAnimationFrame(tick);
+            }
+
+            tick();
+        });
+    }
+
+    initCountdowns();
+
+    // ============================
+    // AJAX Load Events
+    // ============================
     function loadEvents(page = 1) {
         const gameId = $('.game-filter.active').data('game-id');
         const search = $('#searchInput').val();
@@ -224,6 +387,8 @@ $(document).ready(function() {
                 $('#eventsContainer').html(response);
                 $('#eventsContainer').css('opacity', '1');
                 $('#loadingIndicator').hide();
+                // Re-init countdowns after AJAX load
+                initCountdowns();
             },
             error: function() {
                 $('#eventsContainer').css('opacity', '1');
