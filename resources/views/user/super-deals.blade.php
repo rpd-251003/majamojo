@@ -139,18 +139,20 @@
                     </div>
 
                     @php
-                        $daysLeft = now()->diffInDays($deal->end_date, false);
+                        $totalHoursLeft = (int) now()->diffInHours($deal->end_date, false);
+                        $daysLeft = intdiv($totalHoursLeft, 24);
+                        $hoursLeft = $totalHoursLeft % 24;
                     @endphp
 
-                    @if($daysLeft > 0 && $daysLeft <= 7)
+                    @if($totalHoursLeft > 0 && $daysLeft <= 7)
                         <div class="alert alert-warning py-2 mb-3">
                             <i class="ti ti-alert-triangle me-1"></i>
-                            <strong>Hurry!</strong> Only {{ $daysLeft }} day{{ $daysLeft > 1 ? 's' : '' }} left
+                            <strong>Hurry!</strong> Only {{ $daysLeft }}d {{ $hoursLeft }}h left
                         </div>
                     @elseif($daysLeft > 7)
                         <div class="alert alert-success py-2 mb-3">
                             <i class="ti ti-check me-1"></i>
-                            Valid for {{ $daysLeft }} more days
+                            Valid for {{ $daysLeft }}d {{ $hoursLeft }}h more
                         </div>
                     @endif
 
